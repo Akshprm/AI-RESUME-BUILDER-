@@ -1,0 +1,59 @@
+import { initializeApp } from "firebase/app"; 
+import { getFirestore } from "firebase/firestore"; 
+ 
+const firebaseConfig = { 
+  apiKey: "AIzaSyBLKYJbzVYhOSRPtENpEmmS4YTVo1XR1kU", 
+  authDomain: "planz-web-app.firebaseapp.com", 
+  projectId: "planz-web-app", 
+  storageBucket: "planz-web-app.appspot.com", 
+  messagingSenderId: "1013987390645", 
+  appId: "1:1013987390645:web:39f303f23b93c23977cfa5" 
+}; 
+ 
+const app = initializeApp(firebaseConfig); 
+const db = getFirestore(app); 
+ 
+export { db }; 
+ 
+11.Firebase Service 
+ 
+import { db } from './firebase'; 
+import { collection, addDoc, getDocs, doc, updateDoc, deleteDoc, query, where, getDoc } from 
+'firebase/firestore'; 
+ 
+// Create a new resume 
+const CreateNewResume = async (data) => { 
+  try { 
+    const docRef = await addDoc(collection(db, 'resumes'), data); 
+  
+ 
+    return {  
+      data: {  
+        data: { 
+          documentId: docRef.id  
+        } 
+      }  
+    }; 
+  } catch (error) { 
+    throw error; 
+  } 
+}; 
+ 
+// Get user's resumes 
+const GetUserResumes = async (userEmail) => { 
+  try { 
+    const q = query(collection(db, 'resumes'), where('data.userEmail', '==', userEmail)); 
+    const querySnapshot = await getDocs(q); 
+    const resumes = querySnapshot.docs.map(doc => ({ 
+      documentId: doc.id, 
+      ...doc.data() 
+    })); 
+    return {  
+      data: {  
+        data: resumes  
+      }  
+    }; 
+  } catch (error) { 
+    throw error; 
+  } 
+}; 
