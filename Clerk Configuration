@@ -1,0 +1,49 @@
+import { ClerkProvider } from '@clerk/clerk-react' 
+ 
+const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY 
+ 
+ReactDOM.createRoot(document.getElementById('root')).render( 
+  <React.StrictMode> 
+    <ClerkProvider publishableKey={PUBLISHABLE_KEY}> 
+      <RouterProvider router={router} /> 
+    </ClerkProvider> 
+  </React.StrictMode>, 
+) 
+ 
+Clerk Authentication Usage  
+ 
+import { useUser } from '@clerk/clerk-react' 
+ 
+function App() { 
+ 
+  const { user, isLoaded, isSignedIn } = useUser(); 
+ 
+  if (!isSignedIn && isLoaded) { 
+    return <Navigate to={'/auth/sign-in'} /> 
+  } 
+ 
+  return ( 
+    <> 
+      <Header/> 
+      <Outlet/> 
+      <Toaster /> 
+    </> 
+  
+ 
+  ) 
+} 
+ 
+Sign In Component  
+ 
+import { SignIn } from '@clerk/clerk-react' 
+import React from 'react' 
+a 
+function SignInPage() { 
+  return ( 
+    <div className='flex justify-center my-20 items-center'> 
+      <SignIn/> 
+    </div> 
+  ) 
+} 
+ 
+export default SignInPage
