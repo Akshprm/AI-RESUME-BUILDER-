@@ -1,0 +1,51 @@
+const UpdateResumeDetail = async (id, data) => { 
+  try { 
+    const docRef = doc(db, 'resumes', id); 
+    await updateDoc(docRef, data); 
+    return { data: { id } }; 
+  } catch (error) { 
+    throw error; 
+  } 
+}; 
+ 
+// Get resume by ID 
+const GetResumeById = async (id) => { 
+  try { 
+    const docRef = doc(db, 'resumes', id); 
+    const docSnap = await getDoc(docRef); 
+    if (docSnap.exists()) { 
+      const data = docSnap.data(); 
+      return {  
+        data: {  
+          data: { 
+            ...data.data, 
+            documentId: docSnap.id  
+          } 
+        }  
+      }; 
+    } 
+    throw new Error('Resume not found'); 
+  } catch (error) { 
+    throw error; 
+  } 
+  
+ 
+}; 
+ 
+// Delete resume 
+const DeleteResumeById = async (id) => { 
+  try { 
+    await deleteDoc(doc(db, 'resumes', id)); 
+    return { data: { id } }; 
+  } catch (error) { 
+    throw error; 
+  } 
+}; 
+ 
+export default { 
+  CreateNewResume, 
+  GetUserResumes, 
+  UpdateResumeDetail, 
+  GetResumeById, 
+  DeleteResumeById 
+}; 
