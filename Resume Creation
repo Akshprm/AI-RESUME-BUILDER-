@@ -1,0 +1,77 @@
+// src/dashboard/components/AddResume.jsx 
+import { Loader2, PlusSquare } from 'lucide-react' 
+import React, { useState } from 'react' 
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
+"@/components/ui/dialog" 
+import { Button } from '@/components/ui/button' 
+import { Input } from '@/components/ui/input' 
+import { v4 as uuidv4 } from 'uuid' 
+import GlobalApi from './../../../service/GlobalApi' 
+import { useUser } from '@clerk/clerk-react' 
+import { useNavigate } from 'react-router-dom' 
+ 
+function AddResume() { 
+    const [openDialog, setOpenDialog] = useState(false) 
+    const [resumeTitle, setResumeTitle] = useState() 
+    const {user} = useUser() 
+    const [loading, setLoading] = useState(false) 
+    const navigation = useNavigate() 
+ 
+    const onCreate = async() => { 
+        setLoading(true) 
+        const uuid = uuidv4() 
+        const data = { 
+            data: { 
+                title: resumeTitle, 
+                resumeId: uuid, 
+                userEmail: user?.primaryEmailAddress?.emailAddress, 
+                userName: user?.fullName 
+            } 
+        } 
+  
+ 
+ 
+        GlobalApi.CreateNewResume(data).then(resp => { 
+            if(resp) { 
+                setLoading(false) 
+                navigation('/dashboard/resume/' + resp.data.data.documentId + "/edit") 
+            } 
+        }) 
+    } 
+ 
+    return ( 
+        <Dialog open={openDialog} onOpenChange={setOpenDialog}> 
+ 
+            <DialogTrigger asChild> 
+ 
+                <div className='border-2 border-dashed p-3 rounded-lg h-[280px] flex flex-col items
+center justify-center cursor-pointer hover:border-primary'> 
+                    <PlusSquare className='h-10 w-10 text-primary' /> 
+                    <h2 className='text-primary mt-2'>Create New Resume</h2> 
+                </div> 
+            </DialogTrigger> 
+            <DialogContent> 
+                <DialogHeader> 
+                    <DialogTitle>Create New Resume</DialogTitle> 
+                </DialogHeader> 
+                <div className='mt-3'> 
+                    <Input  
+                        placeholder='Enter Resume Title'  
+                        onChange={(e) => setResumeTitle(e.target.value)} 
+                    /> 
+                    <Button  
+                        className='w-full mt-3'  
+                        onClick={onCreate} 
+  
+ 
+                        disabled={!resumeTitle || loading} 
+                    > 
+                        {loading ? <Loader2 className='animate-spin' /> : 'Create'} 
+                    </Button> 
+                </div> 
+            </DialogContent> 
+        </Dialog> 
+    ) 
+} 
+ 
+export default AddResume
