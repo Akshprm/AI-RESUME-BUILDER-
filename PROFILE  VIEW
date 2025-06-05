@@ -1,0 +1,62 @@
+// src/my-resume/[resumeId]/view/index.jsx 
+import Header from '@/components/custom/Header' 
+import { Button } from '@/components/ui/button' 
+import ResumePreview from '@/dashboard/resume/components/ResumePreview' 
+import React, { useEffect, useState } from 'react' 
+import { useParams } from 'react-router-dom' 
+import GlobalApi from './../../../../service/GlobalApi' 
+import { RWebShare } from 'react-web-share' 
+ 
+function ViewResume() { 
+    const [resumeInfo, setResumeInfo] = useState() 
+    const {resumeId} = useParams() 
+ 
+    useEffect(() => { 
+        GetResumeInfo() 
+    }, [resumeId]) 
+ 
+    const GetResumeInfo = () => { 
+        GlobalApi.GetResumeById(resumeId).then(resp => { 
+            if (resp?.data?.data) { 
+                setResumeInfo(resp.data.data) 
+            } 
+        }) 
+    } 
+ 
+    const HandleDownload = () => { 
+        window.print() 
+    } 
+ 
+    if (!resumeInfo) { 
+  
+ 
+        return <div className="flex items-center justify-center min-h-screen">Loading...</div> 
+    } 
+ 
+    return ( 
+        <div> 
+            <Header /> 
+            <div className='p-10'> 
+                <div className='flex justify-between items-center mb-5'> 
+                    <h2 className='text-2xl font-bold'>Resume Preview</h2> 
+                    <div className='flex gap-2'> 
+                        <RWebShare 
+                            data={{ 
+ 
+                                text: "Check out my resume!", 
+                                url: window.location.href, 
+                                title: "My Resume" 
+                            }} 
+                        > 
+                            <Button variant="outline">Share</Button> 
+                        </RWebShare> 
+                        <Button onClick={HandleDownload}>Download</Button> 
+                    </div> 
+                </div> 
+                <ResumePreview resumeInfo={resumeInfo} /> 
+            </div> 
+        </div> 
+    ) 
+} 
+ 
+export default ViewResume
