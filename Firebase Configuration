@@ -1,0 +1,17 @@
+ 
+import { initializeApp } from "firebase/app"; 
+import { getFirestore } from "firebase/firestore"; 
+ 
+const firebaseConfig = { 
+  apiKey: "AIzaSyBLKYJbzVYhOSRPtENpEmmS4YTVo1XR1kU", 
+  authDomain: "planz-web-app.firebaseapp.com", 
+  projectId: "planz-web-app", 
+  storageBucket: "planz-web-app.appspot.com", 
+  messagingSenderId: "1013987390645", 
+  appId: "1:1013987390645:web:39f303f23b93c23977cfa5" 
+}; 
+ 
+const app = initializeApp(firebaseConfig); 
+const db = getFirestore(app); 
+ 
+export { db };
